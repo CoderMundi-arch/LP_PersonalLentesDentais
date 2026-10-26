@@ -91,6 +91,29 @@
   }, { threshold: 0.15 });
   autoVideos.forEach((v) => videoObserver.observe(v));
 
+  // Hero: prévia silenciosa e reprodução com som no modal já existente.
+  // O segundo <source> mantém a versão anterior até o novo vídeo ser publicado.
+  const heroPlay = document.querySelector("[data-hero-play]");
+  const heroVideo = document.querySelector(".hero-frame video");
+  heroPlay?.addEventListener("click", () => {
+    if (!heroVideo) return;
+    heroVideo.pause();
+    const src = heroVideo.currentSrc || heroVideo.querySelector("source")?.src;
+    const modal = document.querySelector(".video-modal");
+    const player = modal?.querySelector("video");
+    if (modal?.showModal && player && src) {
+      document.querySelectorAll("video").forEach(v => v.pause());
+      player.src = src;
+      player.controls = true;
+      player.muted = false;
+      player.loop = false;
+      modal.showModal();
+      player.play().catch(() => {});
+    } else if (src) {
+      window.open(src, "_blank", "noopener");
+    }
+  });
+
   // Depoimentos em vídeo (modal)
   const modal = document.querySelector(".video-modal");
   const modalVideo = modal?.querySelector("video");
